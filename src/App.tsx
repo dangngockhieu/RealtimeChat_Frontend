@@ -1,122 +1,114 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useAuthStore } from '@/store/auth.store'
+import { userService } from '@/services/user.service'
+import { setAccessToken } from '@/services/api.client'
+import { authService } from '@/services/auth.service'
 
-function App() {
-  const [count, setCount] = useState(0)
+// ─── Pages (sẽ tạo ở Giai đoạn 2 trở đi) ─────────────────
+// Tạm thời dùng placeholder để app build được
+const LoginPage = () => (
+  <div className="flex items-center justify-center min-h-screen bg-[var(--color-surface-soft)]">
+    <div className="card-panel p-8 max-w-md w-full mx-4">
+      <h1 className="text-heading-sm text-[var(--color-ink-deep)] mb-2">Đăng nhập</h1>
+      <p className="text-body-sm text-[var(--color-steel)]">Chat Message App — Giai đoạn 2 sẽ hoàn thiện trang này.</p>
+    </div>
+  </div>
+)
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+const ChatPage = () => (
+  <div className="flex items-center justify-center min-h-screen bg-[var(--color-surface-soft)]">
+    <div className="card-panel p-8 max-w-md w-full mx-4">
+      <h1 className="text-heading-sm text-[var(--color-ink-deep)] mb-2">💬 Chat</h1>
+      <p className="text-body-sm text-[var(--color-steel)]">Giai đoạn 4-5 sẽ hoàn thiện layout chat chính.</p>
+    </div>
+  </div>
+)
 
-      <div className="ticks"></div>
+// ─── Route Guards ──────────────────────────────────────────
+function PrivateRoute({ children }: { children: React.ReactNode }) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const isInitializing = useAuthStore((s) => s.isInitializing)
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+  if (isInitializing) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />
 }
 
-export default App
+function PublicRoute({ children }: { children: React.ReactNode }) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const isInitializing = useAuthStore((s) => s.isInitializing)
+
+  if (isInitializing) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  return isAuthenticated ? <Navigate to="/" replace /> : <>{children}</>
+}
+
+// ─── App Root ──────────────────────────────────────────────
+export default function App() {
+  const { login, logout, setIsInitializing } = useAuthStore()
+
+  /**
+   * Khi khởi động app:
+   * 1. Gọi /auth/refresh để lấy accessToken mới bằng HttpOnly cookie
+   * 2. Nếu thành công → lấy profile và set authenticated
+   * 3. Nếu thất bại (cookie hết hạn) → clear auth state
+   */
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        // Thử refresh token (dùng HttpOnly cookie tự động)
+        const refreshRes = await authService.refresh()
+        const newToken = refreshRes.data?.data?.result?.accessToken
+
+        if (!newToken) throw new Error('No token')
+
+        setAccessToken(newToken)
+
+        // Lấy thông tin user
+        const profileRes = await userService.getProfile()
+        const user = profileRes.data?.data?.result
+
+        if (!user) throw new Error('No user profile')
+
+        login(user, newToken)
+      } catch {
+        // Refresh thất bại → chưa đăng nhập hoặc session hết hạn
+        logout()
+      } finally {
+        setIsInitializing(false)
+      }
+    }
+
+    initializeAuth()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <Routes>
+      {/* Public routes — chỉ truy cập khi chưa đăng nhập */}
+      <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+      <Route path="/register" element={<PublicRoute><LoginPage /></PublicRoute>} />
+      <Route path="/verify-otp" element={<PublicRoute><LoginPage /></PublicRoute>} />
+
+      {/* Private routes — yêu cầu đăng nhập */}
+      <Route path="/" element={<PrivateRoute><ChatPage /></PrivateRoute>} />
+      <Route path="/contacts" element={<PrivateRoute><ChatPage /></PrivateRoute>} />
+      <Route path="/profile" element={<PrivateRoute><ChatPage /></PrivateRoute>} />
+
+      {/* Fallback */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  )
+}
