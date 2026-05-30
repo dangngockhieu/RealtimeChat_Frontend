@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /**
  * Debounce hook — trả về phiên bản debounced của callback
@@ -30,14 +30,11 @@ export function useDebounce<T extends (...args: Parameters<T>) => void>(
  * Debounce value hook — trả về giá trị debounced (cho input search)
  */
 export function useDebouncedValue<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = [
-    useRef(value).current,
-    (v: T) => { useRef(v) },
-  ]
+  const [debouncedValue, setDebouncedValue] = useState(value)
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+      setDebouncedValue(value)
     }, delay)
     return () => clearTimeout(timer)
   }, [value, delay])

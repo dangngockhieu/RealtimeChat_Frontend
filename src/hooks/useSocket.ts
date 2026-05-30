@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { io, type Socket } from 'socket.io-client'
 import { useAuthStore } from '@/store/auth.store'
 import { useChatStore } from '@/store/chat.store'
@@ -12,8 +12,6 @@ import type {
   SocketCheckOnlinePayload,
   SocketCheckOnlineResponse,
   SocketUserTypingEvent,
-  SocketMessageReadEvent,
-  SocketMessageRecalledEvent,
   SocketUserOnlineEvent,
   Message,
 } from '@/types'
@@ -37,6 +35,8 @@ let socketInstance: Socket | null = null
 export function useSocket({ onNewMessage }: UseSocketOptions = {}) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const socketRef = useRef<Socket | null>(null)
+  const [socket, setSocket] = useState<Socket | null>(null)
+  const [isConnected, setIsConnected] = useState(false)
 
   const { setTyping, incrementUnread, activeConversationId, clearUnread } = useChatStore()
   const { setOnline, setOffline, setOnlineUsers } = usePresenceStore()
@@ -50,6 +50,10 @@ export function useSocket({ onNewMessage }: UseSocketOptions = {}) {
         socketInstance = null
         socketRef.current = null
       }
+      setTimeout(() => {
+        setSocket(null)
+        setIsConnected(false)
+      }, 0)
       return
     }
 
@@ -59,6 +63,11 @@ export function useSocket({ onNewMessage }: UseSocketOptions = {}) {
     // Tái sử dụng instance nếu đã kết nối
     if (socketInstance?.connected) {
       socketRef.current = socketInstance
+      const currentSocket = socketInstance
+      setTimeout(() => {
+        setSocket(currentSocket)
+        setIsConnected(true)
+      }, 0)
       return
     }
 
@@ -72,12 +81,16 @@ export function useSocket({ onNewMessage }: UseSocketOptions = {}) {
 
     socketInstance = socket
     socketRef.current = socket
+    setTimeout(() => setSocket(socket), 0)
 
     // ─── Event: Xác thực thất bại ──────────────────────────
     socket.on('auth_error', (data: { message: string }) => {
       console.error('[Socket] Auth error:', data.message)
       socket.disconnect()
       socketInstance = null
+      socketRef.current = null
+      setSocket(null)
+      setIsConnected(false)
     })
 
     // ─── Event: Tin nhắn mới ───────────────────────────────
@@ -101,17 +114,17 @@ export function useSocket({ onNewMessage }: UseSocketOptions = {}) {
     })
 
     // ─── Event: Đã đọc tin nhắn ────────────────────────────
-    socket.on('message_read', (_data: SocketMessageReadEvent) => {
+    socket.on('message_read', () => {
       // TODO Phase 5: cập nhật trạng thái read receipt trên tin nhắn
     })
 
     // ─── Event: Thu hồi tin nhắn ───────────────────────────
-    socket.on('message_recalled', (_data: SocketMessageRecalledEvent) => {
+    socket.on('message_recalled', () => {
       // TODO Phase 5: cập nhật isRecalled=true trên tin nhắn tương ứng
     })
 
     // ─── Event: Thay đổi thông tin cuộc trò chuyện ─────────
-    socket.on('conversation_updated', (_data: unknown) => {
+    socket.on('conversation_updated', () => {
       // TODO Phase 4: invalidate conversation query
     })
 
@@ -127,10 +140,12 @@ export function useSocket({ onNewMessage }: UseSocketOptions = {}) {
 
     socket.on('connect', () => {
       console.log('[Socket] Connected:', socket.id)
+      setIsConnected(true)
     })
 
     socket.on('disconnect', (reason) => {
       console.log('[Socket] Disconnected:', reason)
+      setIsConnected(false)
     })
 
     socket.on('connect_error', (err) => {
@@ -193,8 +208,8 @@ export function useSocket({ onNewMessage }: UseSocketOptions = {}) {
   )
 
   return {
-    socket: socketRef.current,
-    isConnected: socketRef.current?.connected ?? false,
+    socket,
+    isConnected,
     // Emit actions
     sendMessage,
     emitTyping,

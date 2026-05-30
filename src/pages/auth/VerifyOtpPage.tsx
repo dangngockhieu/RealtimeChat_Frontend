@@ -29,11 +29,10 @@ export default function VerifyOtpPage() {
   const [successMsg, setSuccessMsg] = useState<string | null>(null)
 
   // Countdown cooldown cho nút Gửi lại
-  const [countdown, setCountdown] = useState(0)
+  const [countdown, setCountdown] = useState(emailFromState ? RESEND_COOLDOWN : 0)
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const startCountdown = useCallback(() => {
-    setCountdown(RESEND_COOLDOWN)
     countdownRef.current = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
@@ -54,7 +53,7 @@ export default function VerifyOtpPage() {
     return () => {
       if (countdownRef.current) clearInterval(countdownRef.current)
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [emailFromState, startCountdown])
 
   // ── OTP input handlers ─────────────────────────────────
   const handleDigitChange = (index: number, value: string) => {
