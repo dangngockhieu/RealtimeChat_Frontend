@@ -1,9 +1,9 @@
 import { MessageSquare } from 'lucide-react'
 import { useChatStore } from '@/store/chat.store'
+import { ChatWindow } from './ChatWindow'
 
 /**
- * Placeholder hiển thị khi chưa chọn cuộc trò chuyện nào
- * Phase 5 sẽ thay thế bằng ChatWindow thực sự
+ * Placeholder displayed when no conversation is active
  */
 export function ChatWindowPlaceholder() {
   return (
@@ -33,7 +33,7 @@ export function ChatWindowPlaceholder() {
 }
 
 /**
- * Wrapper chọn giữa Placeholder và ChatWindow thực
+ * ChatArea: switches between Placeholder and active ChatWindow
  */
 export function ChatArea() {
   const activeConversationId = useChatStore((s) => s.activeConversationId)
@@ -42,26 +42,5 @@ export function ChatArea() {
     return <ChatWindowPlaceholder />
   }
 
-  // Phase 5: return <ChatWindow conversationId={activeConversationId} />
-  return (
-    <div
-      className="flex-1 flex flex-col items-center justify-center gap-4 select-none"
-      style={{ backgroundColor: 'var(--color-surface-soft)' }}
-    >
-      <div
-        className="w-16 h-16 rounded-[var(--radius-xxl)] flex items-center justify-center"
-        style={{ backgroundColor: 'rgba(0,100,224,0.08)' }}
-      >
-        <MessageSquare size={28} style={{ color: 'var(--color-primary)' }} />
-      </div>
-      <div className="text-center">
-        <p className="text-body-sm-bold" style={{ color: 'var(--color-ink-deep)' }}>
-          Conversation: {activeConversationId}
-        </p>
-        <p className="text-caption mt-1" style={{ color: 'var(--color-stone)' }}>
-          Chat window sẽ được hoàn thiện ở Giai đoạn 5
-        </p>
-      </div>
-    </div>
-  )
+  return <ChatWindow conversationId={activeConversationId} />
 }

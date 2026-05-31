@@ -12,6 +12,9 @@ import { useAuthStore } from '@/store/auth.store'
 import { useChatStore } from '@/store/chat.store'
 import { usePresenceStore } from '@/store/presence.store'
 import { getAccessToken } from '@/services/api.client'
+import { useQueryClient } from '@tanstack/react-query'
+import { messageQueryKey } from '@/hooks/useMessages'
+import { CONVERSATIONS_QUERY_KEY } from '@/hooks/useConversations'
 import type {
   Message,
   SocketTypingPayload,
@@ -52,6 +55,7 @@ interface SocketProviderProps {
 }
 
 export function SocketProvider({ children, onNewMessage }: SocketProviderProps) {
+  const queryClient = useQueryClient()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const socketRef = useRef<Socket | null>(null)
   const [socket, setSocket] = useState<Socket | null>(null)
@@ -125,8 +129,26 @@ export function SocketProvider({ children, onNewMessage }: SocketProviderProps) 
     // ── new_message ────────────────────────────────────
     socket.on('new_message', (message: Message) => {
       const convId = String(message.conversationId)
+
+      // Always update conversation list so lastMessage & order update
+      queryClient.invalidateQueries({ queryKey: CONVERSATIONS_QUERY_KEY })
+
+      // If active conversation, append message
       if (convId === activeConvRef.current) {
         onNewMessageRef.current?.(message)
+        // Also update message query data if already loaded
+        queryClient.setQueryData(
+          messageQueryKey(convId),
+          (old: { pages: Array<{ messages: Message[]; nextCursor: string | null; hasNextPage: boolean }> } | undefined) => {
+            if (!old) return old
+            const newPages = [...old.pages]
+            newPages[0] = {
+              ...newPages[0],
+              messages: [message, ...newPages[0].messages],
+            }
+            return { ...old, pages: newPages }
+          }
+        )
       } else {
         incrementUnread(convId)
       }
@@ -143,13 +165,30 @@ export function SocketProvider({ children, onNewMessage }: SocketProviderProps) 
     })
 
     // ── message_recalled ───────────────────────────────
-    socket.on('message_recalled', () => {
-      // Phase 5: update recalled flag in message list
+    socket.on('message_recalled', (data: { conversationId: string; messageId: string }) => {
+      if (data?.conversationId && data?.messageId) {
+        queryClient.setQueryData(
+          messageQueryKey(data.conversationId),
+          (old: { pages: Array<{ messages: Message[]; nextCursor: string | null; hasNextPage: boolean }> } | undefined) => {
+            if (!old) return old
+            return {
+              ...old,
+              pages: old.pages.map((page) => ({
+                ...page,
+                messages: page.messages.map((m) =>
+                  m._id === data.messageId ? { ...m, isRecalled: true } : m
+                ),
+              })),
+            }
+          }
+        )
+      }
+      queryClient.invalidateQueries({ queryKey: CONVERSATIONS_QUERY_KEY })
     })
 
     // ── conversation_updated ───────────────────────────
     socket.on('conversation_updated', () => {
-      // Phase 4: invalidate conversation list query
+      queryClient.invalidateQueries({ queryKey: CONVERSATIONS_QUERY_KEY })
     })
 
     // ── presence ──────────────────────────────────────
