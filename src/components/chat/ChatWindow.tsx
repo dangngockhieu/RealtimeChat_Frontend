@@ -1,8 +1,9 @@
-import { useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { ChatHeader } from './ChatHeader'
 import { MessageList } from './MessageList'
 import { TypingIndicator } from './TypingIndicator'
 import { MessageInput } from './MessageInput'
+import { ConversationInfoDrawer } from './ConversationInfoDrawer'
 import { useAuthStore } from '@/store/auth.store'
 import { useChatStore } from '@/store/chat.store'
 import { useSocketContext } from '@/contexts/SocketContext'
@@ -15,6 +16,7 @@ interface ChatWindowProps {
 }
 
 export function ChatWindow({ conversationId }: ChatWindowProps) {
+  const [isInfoOpen, setIsInfoOpen] = useState(false)
   const user = useAuthStore((s) => s.user)
   const replyingToMessage = useChatStore((s) => s.replyingToMessage)
   const setReplyingTo = useChatStore((s) => s.setReplyingTo)
@@ -24,6 +26,7 @@ export function ChatWindow({ conversationId }: ChatWindowProps) {
   // Join conversation socket room
   useEffect(() => {
     joinConversation(conversationId)
+    setIsInfoOpen(false) // Reset drawer on conversation change
     return () => {
       leaveConversation(conversationId)
     }
@@ -69,7 +72,6 @@ export function ChatWindow({ conversationId }: ChatWindowProps) {
     async (messageId: string) => {
       try {
         await messageService.deleteForMe(messageId)
-        // Mark locally recalled or refresh list
         markRecalled(messageId)
       } catch (err) {
         console.error('Failed to delete message for me:', err)
@@ -86,27 +88,41 @@ export function ChatWindow({ conversationId }: ChatWindowProps) {
   )
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-[var(--color-canvas)] overflow-hidden">
-      {/* Chat Header */}
-      <ChatHeader conversationId={conversationId} />
+    <div className="flex-1 flex h-full bg-[var(--color-canvas)] overflow-hidden">
+      {/* Main chat column */}
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
+        {/* Chat Header */}
+        <ChatHeader
+          conversationId={conversationId}
+          onToggleInfo={() => setIsInfoOpen((prev) => !prev)}
+        />
 
-      {/* Message List */}
-      <MessageList
-        conversationId={conversationId}
-        currentUserId={user?.id ?? ''}
-        onReply={handleReply}
-        onRecall={handleRecallMessage}
-        onDeleteForMe={handleDeleteForMe}
-      />
+        {/* Message List */}
+        <MessageList
+          conversationId={conversationId}
+          currentUserId={user?.id ?? ''}
+          onReply={handleReply}
+          onRecall={handleRecallMessage}
+          onDeleteForMe={handleDeleteForMe}
+        />
 
-      {/* Typing indicator */}
-      <TypingIndicator conversationId={conversationId} />
+        {/* Typing indicator */}
+        <TypingIndicator conversationId={conversationId} />
 
-      {/* Message Input Bar */}
-      <MessageInput
-        conversationId={conversationId}
-        onSend={handleSendMessage}
-      />
+        {/* Message Input Bar */}
+        <MessageInput
+          conversationId={conversationId}
+          onSend={handleSendMessage}
+        />
+      </div>
+
+      {/* Info Drawer Panel on right */}
+      {isInfoOpen && (
+        <ConversationInfoDrawer
+          conversationId={conversationId}
+          onClose={() => setIsInfoOpen(false)}
+        />
+      )}
     </div>
   )
 }
