@@ -12,6 +12,7 @@ import VerifyOtpPage from '@/pages/auth/VerifyOtpPage'
 
 // ─── Main app page ─────────────────────────────────────────
 import ChatPage from '@/pages/chat/ChatPage'
+import ContactsPage from '@/pages/contacts/ContactsPage'
 
 // ─── Route Guards ──────────────────────────────────────────
 function LoadingScreen() {
@@ -88,6 +89,7 @@ export default function App() {
       <Route path="/verify-otp" element={<PublicRoute><VerifyOtpPage /></PublicRoute>} />
 
       {/* Private — tất cả render qua MainLayout */}
+      <Route path="/contacts" element={<PrivateRoute><ContactsPage /></PrivateRoute>} />
       <Route path="/*" element={<PrivateRoute><ChatPage /></PrivateRoute>} />
     </Routes>
   )
