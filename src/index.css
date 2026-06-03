@@ -1,10 +1,9 @@
-@import "tailwindcss";
-
 /* ============================================================
    OPTIMISTIC VF — Meta's Variable Font
    Fallback: Helvetica Neue, Arial, sans-serif
    ============================================================ */
 @import url("https://fonts.cdnfonts.com/css/optimistic-display");
+@import "tailwindcss";
 
 /* ============================================================
    META DESIGN SYSTEM — Custom Theme Tokens (Tailwind v4)

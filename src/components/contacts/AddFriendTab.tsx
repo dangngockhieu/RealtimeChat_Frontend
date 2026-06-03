@@ -17,7 +17,7 @@ export function AddFriendTab() {
   const queryClient = useQueryClient()
 
   // Search user by email
-  const { data: foundUser, isFetching, error } = useQuery({
+  const { data: foundUser, isFetching } = useQuery({
     queryKey: ['user-by-email', submittedEmail],
     queryFn: () => userService.getUserByEmail(submittedEmail),
     select: (res) => res.data?.data?.result as UserAccount | null,
