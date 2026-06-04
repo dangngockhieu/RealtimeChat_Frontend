@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Link, useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -12,21 +12,19 @@ import { userService } from '@/services/user.service'
 import { setAccessToken } from '@/services/api.client'
 import { useAuthStore } from '@/store/auth.store'
 
-// ─── Zod schema ────────────────────────────────────────────
 const loginSchema = z.object({
   email: z
     .string()
-    .min(1, 'Vui lòng nhập email')
-    .email('Email không hợp lệ'),
+    .min(1, 'Email không được để trống')
+    .email('Địa chỉ email không hợp lệ'),
   password: z
     .string()
-    .min(1, 'Vui lòng nhập mật khẩu')
+    .min(1, 'Mật khẩu không được để trống')
     .min(6, 'Mật khẩu tối thiểu 6 ký tự'),
 })
 
 type LoginFormData = z.infer<typeof loginSchema>
 
-// ───────────────────────────────────────────────────────────
 export default function LoginPage() {
   const navigate = useNavigate()
   const { login } = useAuthStore()
@@ -39,7 +37,10 @@ export default function LoginPage() {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: '', password: '' },
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   })
 
   const onSubmit = async (data: LoginFormData) => {
@@ -49,29 +50,19 @@ export default function LoginPage() {
       const result = res.data?.data?.result
       const accessToken = result?.accessToken
 
-      if (!accessToken) throw new Error('Không nhận được token')
-
-      // Set token vào memory trước khi gọi profile
-      setAccessToken(accessToken)
-
-      // Lấy profile đầy đủ
-      const profileRes = await userService.getProfile()
-      const user = profileRes.data?.data?.result
-
-      if (!user) throw new Error('Không lấy được thông tin người dùng')
-
-      login(user, accessToken)
-      navigate('/', { replace: true })
+      if (accessToken) {
+        setAccessToken(accessToken)
+        const profileRes = await userService.getProfile()
+        const user = profileRes.data?.data?.result
+        if (user) {
+          login(user, accessToken)
+          navigate('/', { replace: true })
+        }
+      }
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } }
       const msg = axiosErr?.response?.data?.message
-      if (msg?.includes('chưa kích hoạt') || msg?.includes('isActive')) {
-        setServerError('Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email.')
-      } else if (msg?.includes('mật khẩu') || msg?.includes('password') || msg?.includes('Unauthorized')) {
-        setServerError('Email hoặc mật khẩu không chính xác.')
-      } else {
-        setServerError(msg || 'Đăng nhập thất bại. Vui lòng thử lại.')
-      }
+      setServerError(msg || 'Đăng nhập thất bại. Vui lòng kiểm tra lại email hoặc mật khẩu.')
     }
   }
 
@@ -79,10 +70,7 @@ export default function LoginPage() {
     <AuthLayout>
       {/* Header */}
       <div className="mb-8">
-        <h1
-          className="text-heading-sm mb-1.5"
-          style={{ color: 'var(--color-ink-deep)', fontFeatureSettings: '"ss01","ss02"' }}
-        >
+        <h1 className="text-heading-sm mb-1.5" style={{ color: 'var(--color-ink-deep)' }}>
           Đăng nhập
         </h1>
         <p className="text-body-sm" style={{ color: 'var(--color-steel)' }}>
@@ -139,10 +127,9 @@ export default function LoginPage() {
 
         <Button
           type="submit"
-          variant="primary"
+          variant="ink"
           fullWidth
           loading={isSubmitting}
-          className="mt-1"
         >
           Đăng nhập
         </Button>
@@ -152,11 +139,7 @@ export default function LoginPage() {
       <div className="flex flex-col items-center gap-4 mt-6">
         <p className="text-body-sm" style={{ color: 'var(--color-steel)' }}>
           Chưa có tài khoản?{' '}
-          <Link
-            to="/register"
-            className="font-bold"
-            style={{ color: 'var(--color-primary)' }}
-          >
+          <Link to="/register" className="font-bold text-[var(--color-primary)] hover:underline">
             Đăng ký ngay
           </Link>
         </p>

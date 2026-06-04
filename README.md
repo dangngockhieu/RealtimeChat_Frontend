@@ -188,17 +188,3 @@ npm run build
 # Chạy thử bản build production
 npm run preview
 ```
-
----
-
-## 🎨 Chuẩn thiết kế Meta Design System
-
-Dự án áp dụng chặt chẽ theo tài liệu `.claude/DESIGN.md`:
-* **Typography**: Sử dụng font chữ biến thể **Optimistic VF** (fallback sang Montserrat, Helvetica, Arial).
-* **Nút bấm (Buttons)**: 100% tuân thủ hình dạng viên thuốc (`border-radius: 100px` / `rounded-full`), không bao giờ sử dụng góc vuông.
-* **Hệ màu sắc chính**:
-  * **Primary Cobalt** (`#0064e0`): Dành riêng cho các nút hành động chính (Action CTA) và bong bóng tin nhắn của tôi.
-  * **Ink Button** (`#000000`): Dành cho các nút xác thực và marketing.
-  * **Surface Soft** (`#f1f4f7`): Nền phụ và bong bóng tin nhắn người khác.
-  * **Ink Deep** (`#0a1317`): Màu chữ tiêu đề chính.
-* **Bo góc thẻ (Cards)**: Bo tròn lớn chuẩn `xxxl` (32px) cho các khung panel và `xl` (16px) cho thẻ tính năng.

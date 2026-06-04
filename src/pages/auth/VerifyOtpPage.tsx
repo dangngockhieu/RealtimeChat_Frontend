@@ -124,7 +124,6 @@ export default function VerifyOtpPage() {
       const axiosErr = err as { response?: { data?: { message?: string } } }
       const msg = axiosErr?.response?.data?.message
       setServerError(msg || 'Mã OTP không chính xác hoặc đã hết hạn.')
-      // Reset các ô OTP để nhập lại
       setDigits(Array(OTP_LENGTH).fill(''))
       inputRefs.current[0]?.focus()
     } finally {
@@ -182,7 +181,7 @@ export default function VerifyOtpPage() {
         </div>
         <h1
           className="text-heading-sm mb-1.5"
-          style={{ color: 'var(--color-ink-deep)', fontFeatureSettings: '"ss01","ss02"' }}
+          style={{ color: 'var(--color-ink-deep)' }}
         >
           Xác thực email
         </h1>

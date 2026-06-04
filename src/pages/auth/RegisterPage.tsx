@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Link, useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock} from 'lucide-react'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -78,11 +78,7 @@ export default function RegisterPage() {
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } }
       const msg = axiosErr?.response?.data?.message
-      if (msg?.includes('email') || msg?.includes('Email') || msg?.includes('tồn tại')) {
-        setServerError('Email này đã được sử dụng. Vui lòng dùng email khác hoặc đăng nhập.')
-      } else {
-        setServerError(msg || 'Đăng ký thất bại. Vui lòng thử lại.')
-      }
+      setServerError(msg || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.')
     }
   }
 
@@ -92,7 +88,7 @@ export default function RegisterPage() {
       <div className="mb-8">
         <h1
           className="text-heading-sm mb-1.5"
-          style={{ color: 'var(--color-ink-deep)', fontFeatureSettings: '"ss01","ss02"' }}
+          style={{ color: 'var(--color-ink-deep)' }}
         >
           Tạo tài khoản
         </h1>
@@ -110,7 +106,6 @@ export default function RegisterPage() {
             type="text"
             placeholder="Nguyễn"
             autoComplete="given-name"
-            leftIcon={<User size={16} />}
             error={errors.firstName?.message}
             {...register('firstName')}
           />
