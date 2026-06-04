@@ -109,7 +109,7 @@ export function ProfileInfoCard({ user }: ProfileInfoCardProps) {
         <div>
           <h2
             className="text-subtitle-lg"
-            style={{ color: 'var(--color-ink-deep)', fontFeatureSettings: '"ss01","ss02"' }}
+            style={{ color: 'var(--color-ink-deep)' }}
           >
             Thông tin cá nhân
           </h2>

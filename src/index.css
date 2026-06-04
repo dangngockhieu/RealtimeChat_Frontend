@@ -1,13 +1,11 @@
 /* ============================================================
-   OPTIMISTIC VF — Meta's Variable Font
-   Fallback: Helvetica Neue, Arial, sans-serif
+   BE VIETNAM PRO — Font chữ tiếng Việt chuẩn đẹp
    ============================================================ */
-@import url("https://fonts.cdnfonts.com/css/optimistic-display");
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap');
 @import "tailwindcss";
 
 /* ============================================================
    META DESIGN SYSTEM — Custom Theme Tokens (Tailwind v4)
-   Source: D:\Project\Message-Frontend\.claude\DESIGN.md
    ============================================================ */
 @theme {
   /* ---------- Brand & Accent Colors ---------- */
@@ -75,7 +73,7 @@
   --spacing-hero: 120px;
 
   /* ---------- Font Family ---------- */
-  --font-optimistic: "Optimistic Display", "Optimistic Text", Montserrat, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-be-vietnam: "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* ---------- Font Size Scale ---------- */
   --text-hero-display: 64px;
@@ -107,7 +105,7 @@ html, body, #root {
 }
 
 body {
-  font-family: var(--font-optimistic);
+  font-family: var(--font-be-vietnam);
   font-size: var(--text-body-md);
   line-height: 1.5;
   letter-spacing: -0.16px;
@@ -124,37 +122,32 @@ body {
 /* ----- Typography utilities ----- */
 .text-hero-display {
   font-size: var(--text-hero-display);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.16;
-  font-feature-settings: "ss01", "ss02";
 }
 
 .text-display-lg {
   font-size: var(--text-display-lg);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.17;
-  font-feature-settings: "ss01", "ss02";
 }
 
 .text-heading-lg {
   font-size: var(--text-heading-lg);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.28;
-  font-feature-settings: "ss01", "ss02";
 }
 
 .text-heading-md {
   font-size: var(--text-heading-md);
-  font-weight: 300;
+  font-weight: 600;
   line-height: 1.21;
-  font-feature-settings: "ss01", "ss02";
 }
 
 .text-heading-sm {
   font-size: var(--text-heading-sm);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.25;
-  font-feature-settings: "ss01", "ss02";
 }
 
 .text-subtitle-lg {
@@ -361,7 +354,7 @@ body {
   width: 100%;
   outline: none;
   transition: border 150ms ease-out;
-  font-family: var(--font-optimistic);
+  font-family: var(--font-be-vietnam);
 }
 
 .input-field:focus {
@@ -386,7 +379,7 @@ body {
   border: none;
   outline: none;
   width: 100%;
-  font-family: var(--font-optimistic);
+  font-family: var(--font-be-vietnam);
 }
 
 .input-search-pill:focus {

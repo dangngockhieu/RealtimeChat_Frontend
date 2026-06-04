@@ -32,7 +32,7 @@ export function PreferencesCard() {
       <div className="border-b border-[var(--color-hairline-soft)] pb-4">
         <h2
           className="text-subtitle-lg"
-          style={{ color: 'var(--color-ink-deep)', fontFeatureSettings: '"ss01","ss02"' }}
+          style={{ color: 'var(--color-ink-deep)' }}
         >
           Cài đặt & Tùy chọn
         </h2>

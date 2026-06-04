@@ -159,7 +159,7 @@ export function ConversationInfoDrawer({
       <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-hairline-soft)] min-h-[64px]">
         <h3
           className="text-subtitle-lg"
-          style={{ color: 'var(--color-ink-deep)', fontFeatureSettings: '"ss01","ss02"' }}
+          style={{ color: 'var(--color-ink-deep)' }}
         >
           Thông tin hội thoại
         </h3>

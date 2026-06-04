@@ -61,7 +61,7 @@ export function ChangePasswordCard() {
       <div className="border-b border-[var(--color-hairline-soft)] pb-4">
         <h2
           className="text-subtitle-lg"
-          style={{ color: 'var(--color-ink-deep)', fontFeatureSettings: '"ss01","ss02"' }}
+          style={{ color: 'var(--color-ink-deep)' }}
         >
           Đổi mật khẩu
         </h2>

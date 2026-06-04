@@ -62,7 +62,7 @@ export function EditGroupNameModal({
           <div className="flex items-center justify-between mb-4">
             <h3
               className="text-subtitle-lg"
-              style={{ color: 'var(--color-ink-deep)', fontFeatureSettings: '"ss01","ss02"' }}
+              style={{ color: 'var(--color-ink-deep)' }}
             >
               Đổi tên nhóm
             </h3>

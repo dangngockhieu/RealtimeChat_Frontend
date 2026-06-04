@@ -41,7 +41,7 @@ export default function ProfilePage() {
           <div className="px-8 pt-8 pb-4 bg-[var(--color-canvas)] border-b border-[var(--color-hairline-soft)]">
             <h1
               className="text-heading-sm"
-              style={{ color: 'var(--color-ink-deep)', fontFeatureSettings: '"ss01","ss02"' }}
+              style={{ color: 'var(--color-ink-deep)' }}
             >
               Hồ sơ & Cài đặt
             </h1>

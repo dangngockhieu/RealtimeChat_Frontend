@@ -124,7 +124,7 @@ export function NewConversationModal({ onClose }: NewConversationModalProps) {
           <div className="flex items-center justify-between px-6 pt-6 pb-4">
             <h2
               className="text-subtitle-lg"
-              style={{ color: 'var(--color-ink-deep)', fontFeatureSettings: '"ss01","ss02"' }}
+              style={{ color: 'var(--color-ink-deep)' }}
             >
               Cuộc trò chuyện mới
             </h2>

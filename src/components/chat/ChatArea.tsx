@@ -20,7 +20,7 @@ export function ChatWindowPlaceholder() {
       <div className="text-center">
         <p
           className="text-heading-sm mb-2"
-          style={{ color: 'var(--color-ink-deep)', fontFeatureSettings: '"ss01","ss02"' }}
+          style={{ color: 'var(--color-ink-deep)' }}
         >
           Chọn một cuộc trò chuyện
         </p>

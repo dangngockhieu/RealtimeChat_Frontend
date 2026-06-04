@@ -32,7 +32,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
           </div>
           <span
             className="text-subtitle-lg"
-            style={{ color: 'var(--color-canvas)', fontFeatureSettings: '"ss01","ss02"' }}
+            style={{ color: 'var(--color-canvas)' }}
           >
             Message
           </span>
@@ -42,7 +42,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         <div className="flex flex-col gap-6">
           <h1
             className="text-display-lg"
-            style={{ color: 'var(--color-canvas)', fontFeatureSettings: '"ss01","ss02"' }}
+            style={{ color: 'var(--color-canvas)' }}
           >
             Kết nối mọi lúc,<br />
             mọi nơi.
@@ -104,7 +104,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
             </div>
             <span
               className="text-subtitle-lg"
-              style={{ color: 'var(--color-ink-deep)', fontFeatureSettings: '"ss01","ss02"' }}
+              style={{ color: 'var(--color-ink-deep)' }}
             >
               Message
             </span>
