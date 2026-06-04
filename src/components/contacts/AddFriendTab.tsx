@@ -53,26 +53,40 @@ export function AddFriendTab() {
   const isSelf = foundUser?.id === currentUserId
 
   return (
-    <div className="flex flex-col gap-6 max-w-xl mx-auto py-6">
-      {/* Search Input Box */}
-      <form onSubmit={handleSearch} className="flex gap-2">
-        <div className="relative flex-1">
-          <Search
-            size={16}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-stone)]"
-          />
-          <input
-            type="email"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Nhập địa chỉ email của bạn bè..."
-            className="input-field pl-10"
-          />
-        </div>
-        <Button type="submit" variant="primary" loading={isFetching}>
-          Tìm kiếm
-        </Button>
-      </form>
+    <div className="w-full max-w-2xl mx-auto flex flex-col gap-6">
+      {/* Search Input Box Card */}
+      <div className="bg-[var(--color-canvas)] p-6 rounded-[var(--radius-xxl)] border border-[var(--color-hairline-soft)] shadow-sm">
+        <h3 className="text-body-md-bold text-[var(--color-ink-deep)] mb-1">
+          Tìm kiếm bạn bè qua email
+        </h3>
+        <p className="text-body-sm text-[var(--color-stone)] mb-4">
+          Nhập địa chỉ email của người dùng để tìm kiếm và gửi lời mời kết bạn.
+        </p>
+
+        <form onSubmit={handleSearch} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full">
+          <div className="relative flex-1 min-w-0">
+            <Search
+              size={18}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-stone)] pointer-events-none"
+            />
+            <input
+              type="email"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Nhập địa chỉ email (ví dụ: mai.le@example.com)..."
+              className="w-full h-11 pl-10 pr-4 rounded-full bg-[var(--color-surface-soft)] text-body-sm text-[var(--color-ink-deep)] placeholder-[var(--color-stone)] border border-[var(--color-hairline)] focus:border-[var(--color-primary)] focus:bg-white outline-none transition-all"
+            />
+          </div>
+          <Button
+            type="submit"
+            variant="primary"
+            loading={isFetching}
+            className="flex-shrink-0 !h-11 !px-6"
+          >
+            Tìm kiếm
+          </Button>
+        </form>
+      </div>
 
       {/* Feedback Alert */}
       {feedback && (
@@ -88,27 +102,29 @@ export function AddFriendTab() {
         </div>
       )}
 
-      {/* Results */}
+      {/* Loading state */}
       {isFetching && (
         <div className="flex justify-center py-8">
           <div className="w-6 h-6 border-2 border-t-transparent border-[var(--color-primary)] rounded-full animate-spin" />
         </div>
       )}
 
+      {/* Not found state */}
       {submittedEmail && !isFetching && !foundUser && (
-        <div className="text-center py-8 text-[var(--color-stone)]">
-          <p className="text-body-md font-medium text-[var(--color-ink-deep)]">
-            Không tìm thấy người dùng
+        <div className="text-center py-8 bg-[var(--color-canvas)] rounded-[var(--radius-xxl)] border border-[var(--color-hairline-soft)] text-[var(--color-stone)]">
+          <p className="text-body-md font-bold text-[var(--color-ink-deep)]">
+            Không tìm thấy người dùng với email: "{submittedEmail}"
           </p>
           <p className="text-caption mt-1">
-            Vui lòng kiểm tra lại địa chỉ email và thử lại.
+            Gợi ý email thử nghiệm: mai.le@example.com, tuan.tran@example.com, ha.pham@example.com
           </p>
         </div>
       )}
 
+      {/* User Found Card */}
       {foundUser && !isFetching && (
-        <div className="flex items-center justify-between p-4 rounded-[var(--radius-xxl)] bg-[var(--color-canvas)] border border-[var(--color-hairline-soft)] shadow-sm">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between p-5 rounded-[var(--radius-xxl)] bg-[var(--color-canvas)] border border-[var(--color-hairline-soft)] shadow-sm">
+          <div className="flex items-center gap-4">
             <Avatar user={{ ...foundUser, id: foundUser.id }} size="lg" />
             <div>
               <p className="text-body-md-bold text-[var(--color-ink-deep)]">
@@ -120,7 +136,7 @@ export function AddFriendTab() {
             </div>
           </div>
 
-          {!isSelf && (
+          {!isSelf ? (
             <Button
               variant="buy"
               size="sm"
@@ -130,6 +146,8 @@ export function AddFriendTab() {
             >
               Kết bạn
             </Button>
+          ) : (
+            <span className="badge badge-attention">Tài khoản của bạn</span>
           )}
         </div>
       )}
